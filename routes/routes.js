@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { ObjectId } = require('mongodb');
-const { id } = require('monk');
 const multer = require('multer');
-const { message } = require('prompt');
 
 //multer storage
 const multerStorage = multer.diskStorage({
