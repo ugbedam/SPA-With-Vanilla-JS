@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const { dbConnection, getDB } = require('./db');
 const bodyParser = require('body-parser');
@@ -7,14 +8,15 @@ const usersRouter = require('./routes/routes');
 const fse = require('fs-extra');
 const app = express();
 
-const PORT = process.env.PORT || 5000;
+const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
 
 global.db;
 //database connection
 dbConnection((err) => {
   if (!err) {
-    app.listen(PORT, () => {
-      console.log(`Server listening on port ${PORT}`);
+    app.listen(port, () => {
+      console.log(`Server listening on port ${port}`);
     });
     db = getDB();
   }
@@ -40,6 +42,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 //setup for view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+//Normalize a port into a number, string, or false.
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
 
 //home page route
 app.get('/', function (req, res) {

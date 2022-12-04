@@ -24,7 +24,7 @@ router.get('/', function (req, res) {
   let users = [];
 
   db.collection('users')
-    .find() //returns a cursor, a pointer to the result of a db query
+    .find({}) //returns a cursor, a pointer to the result of a db query
     .forEach((user) => users.push(user))
     .then(() => {
       if (!users) {
@@ -50,7 +50,6 @@ router.post('/', upload.single('file'), (req, res) => {
   }
 
   req.body.file = filename;
-  console.dir(req.body);
 
   db.collection('users')
     .insertOne(req.body)
