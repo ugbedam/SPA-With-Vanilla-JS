@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { ObjectId } = require('mongodb');
 const multer = require('multer');
+const sanitizeHTML = require('sanitize-html');
 
 //multer storage
 const multerStorage = multer.diskStorage({
@@ -21,15 +22,14 @@ const upload = multer({
 
 //@Get all users
 router.get('/', function (req, res) {
-  let users = [];
-
   db.collection('users')
     .find({}) //returns a cursor, a pointer to the result of a db query
-    .forEach((user) => users.push(user))
-    .then(() => {
+    .toArray()
+    .then((users) => {
       if (!users) {
-        throw 'Could not fetch documents';
+        throw 'The requested resource was not found';
       }
+
       res.status(200).json(users);
     })
     .catch((err) => {
@@ -38,7 +38,7 @@ router.get('/', function (req, res) {
 });
 
 //@Create User
-router.post('/', upload.single('file'), (req, res) => {
+router.post('/', upload.single('file'), sanitizeForm, (req, res) => {
   let filename;
 
   // req.file is an object created by Multer if a file is loaded
@@ -83,7 +83,7 @@ router.delete('/:id', getUser, (req, res) => {
     .then((result) => {
       if (result.deletedCount == 0)
         throw `Document with id ${req.id} not found`;
-      res.status(200).json({ message: 'Document deleted successfully' });
+      res.sendStatus(204);
     })
     .catch((error) => {
       res.status(404).json({ message: error });
@@ -113,6 +113,40 @@ function getUser(req, res, next) {
     return;
   }
   req.id = id;
+  next();
+}
+
+function sanitizeForm(req, res, next) {
+  if (
+    !req.body.first ||
+    !req.body.last ||
+    !req.body.title ||
+    !req.body.website ||
+    !req.body.file
+  ) {
+    res.status(422).json({ error: 'Request had invalid or missing data' });
+    return;
+  }
+
+  req.cleanData = {
+    first: sanitizeHTML(req.body.first.trim(), {
+      allowedTags: [],
+      allowedAttributes: {}
+    }),
+    last: sanitizeHTML(req.body.last.trim(), {
+      allowedTags: [],
+      allowedAttributes: {}
+    }),
+    title: sanitizeHTML(req.body.title.trim(), {
+      allowedTags: [],
+      allowedAttributes: {}
+    }),
+    website: sanitizeHTML(req.body.website.trim(), {
+      allowedTags: [],
+      allowedAttributes: {}
+    })
+  };
+
   next();
 }
 
