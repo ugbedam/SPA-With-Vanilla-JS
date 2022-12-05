@@ -1,7 +1,7 @@
 GET http://localhost:5000/api/users
 
 ###
-GET http://localhost:5000/api/users/638e1966f3c4c2cfef49735e
+GET http://localhost:5000/api/users/638e21d2138d0172c1089da0
 
 ###
 POST  http://localhost:5000/api/users
@@ -12,12 +12,12 @@ Content-Type: application/json
     "last":"Will",
     "title":"Developer",
     "website":"http://wsmith.com",
-    "file":"eowkelpe.jpeg",
+    "file":"20221105-1298473.jpeg",
     "role":"engineer"
 }
 
 ###
-DELETE http://localhost:5000/api/users/638e1966f3c4c2cfef49735e
+DELETE http://localhost:5000/api/users/638e29d6c9df675e8a677c64
 
 ###
 PATCH http://localhost:5000/api/users/63770eca86080434a7b2e0b8
@@ -26,3 +26,4 @@ Content-Type: application/json
 {
     "last": "Ajodo"
 }
+

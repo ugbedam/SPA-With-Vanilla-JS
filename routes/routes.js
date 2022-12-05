@@ -52,10 +52,13 @@ router.post('/', upload.single('file'), sanitizeForm, (req, res) => {
   req.body.file = filename;
 
   db.collection('users')
-    .insertOne(req.body)
-    .then((result) => {
-      if (!result) throw 'Unable to create user';
-      res.status(201).json(result);
+    .insertOne(req.cleanData)
+    .then((info) => {
+      return db.collection('users').findOne({ _id: ObjectId(info.insertedId) });
+    })
+    .then((newUser) => {
+      if (!newUser) throw 'Unable to create user';
+      res.status(201).json(newUser);
       console.log('Document created successfully!');
     })
     .catch((err) => {
@@ -124,7 +127,7 @@ function sanitizeForm(req, res, next) {
     !req.body.website ||
     !req.body.file
   ) {
-    res.status(422).json({ error: 'Request had invalid or missing data' });
+    res.status(422).json({ error: 'Request had missing data' });
     return;
   }
 
@@ -142,6 +145,10 @@ function sanitizeForm(req, res, next) {
       allowedAttributes: {}
     }),
     website: sanitizeHTML(req.body.website.trim(), {
+      allowedTags: [],
+      allowedAttributes: {}
+    }),
+    file: sanitizeHTML(req.body.file.trim(), {
       allowedTags: [],
       allowedAttributes: {}
     })
