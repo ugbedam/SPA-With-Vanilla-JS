@@ -1,7 +1,7 @@
 GET http://localhost:5000/api/users
 
 ###
-GET http://localhost:5000/api/users/638e2df6965aaddb095c0a62
+GET http://localhost:5000/api/users/638e676f710ff240ae8f9ebe
 
 ###
 POST  http://localhost:5000/api/users
@@ -9,20 +9,19 @@ Content-Type: application/json
 
 {
     "first":"Brad",
-    "last":"Traversy",
+    "last":"Schiff",
     "title":"Sr. Fullstack Dev",
-    "website":"http://traversy-media.com",
-    "file":"20221105-1298473.jpeg"
+    "website":"http://traversy-media.com"
 }
 
 ###
-DELETE http://localhost:5000/api/users/638e2df6965aaddb095c0a62
+DELETE http://localhost:5000/api/users/638f6b36bd2c014e8324aefe
 
 ###
-PATCH http://localhost:5000/api/users/63770eca86080434a7b2e0b8
+PATCH http://localhost:5000/api/users/638e676f710ff240ae8f9ebe
 Content-Type: application/json
 
 {
-    "last": "Ajodo"
+    "last": "Schiff"
 }
 

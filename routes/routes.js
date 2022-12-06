@@ -20,15 +20,17 @@ const upload = multer({
   storage: multerStorage
 });
 
-//@Get all users
+//@Retrieve all users
 router.get('/', function (req, res) {
   db.collection('users')
     .find({}) //returns a cursor, a pointer to the result of a db query
-    .toArray()
+    .toArray() //convert BSON data to a format consumable over HTTP
     .then((users) => {
+      //An array of users documents
       if (!users) {
         throw 'The requested resource was not found';
       }
+      console.log(users.length + ' documents retrieved');
       res.status(200).json(users);
     })
     .catch((err) => {
@@ -49,6 +51,7 @@ router.post('/', upload.single('file'), sanitizeForm, (req, res) => {
   }
 
   req.body.file = filename;
+  console.dir(req.body);
 
   db.collection('users')
     .insertOne(req.cleanData)
@@ -95,8 +98,9 @@ router.delete('/:id', getUser, (req, res) => {
 //@Update user
 router.patch('/:id', getUser, (req, res) => {
   db.collection('users')
-    .updateOne({ _id: ObjectId(req.id) }, { $set: req.body })
+    .updateOne({ _id: ObjectId(req.id) }, { $set: req.body }, { upsert: true })
     .then((result) => {
+      console.log(result);
       if (result.matchedCount == 0)
         throw `Document with id ${req.id} not found`;
       res.status(200).json({ message: 'Document successfully updated!' });
@@ -119,16 +123,10 @@ function getUser(req, res, next) {
 }
 
 function sanitizeForm(req, res, next) {
-  if (
-    !req.body.first ||
-    !req.body.last ||
-    !req.body.title ||
-    !req.body.website ||
-    !req.body.file
-  ) {
-    res.status(422).json({ error: 'Request had invalid or missing data' });
-    return;
-  }
+  if (typeof req.body.first != 'string') req.body.first = '';
+  if (typeof req.body.last != 'string') req.body.last = '';
+  if (typeof req.body.title != 'string') req.body.title = '';
+  if (typeof req.body.website != 'string') req.body.website = '';
 
   req.cleanData = {
     first: sanitizeHTML(req.body.first.trim(), {
@@ -144,10 +142,6 @@ function sanitizeForm(req, res, next) {
       allowedAttributes: {}
     }),
     website: sanitizeHTML(req.body.website.trim(), {
-      allowedTags: [],
-      allowedAttributes: {}
-    }),
-    file: sanitizeHTML(req.body.file.trim(), {
       allowedTags: [],
       allowedAttributes: {}
     })
