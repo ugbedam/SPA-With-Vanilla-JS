@@ -3,7 +3,7 @@ import { createUser } from './js/api.js';
 const AddUser = () => {
   setTimeout(() => {
     const form = document.getElementById('form');
-
+    //Event handle function
     function submitUser(event) {
       event.preventDefault();
       createUser();

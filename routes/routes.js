@@ -29,7 +29,6 @@ router.get('/', function (req, res) {
       if (!users) {
         throw 'The requested resource was not found';
       }
-
       res.status(200).json(users);
     })
     .catch((err) => {
@@ -59,7 +58,7 @@ router.post('/', upload.single('file'), sanitizeForm, (req, res) => {
     .then((newUser) => {
       if (!newUser) throw 'Unable to create user';
       res.status(201).json(newUser);
-      console.log('Document created successfully!');
+      console.log('Document inserted successfully!');
     })
     .catch((err) => {
       res.status(500).json({ error: err });
@@ -127,7 +126,7 @@ function sanitizeForm(req, res, next) {
     !req.body.website ||
     !req.body.file
   ) {
-    res.status(422).json({ error: 'Request had missing data' });
+    res.status(422).json({ error: 'Request had invalid or missing data' });
     return;
   }
 

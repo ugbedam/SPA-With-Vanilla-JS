@@ -1,23 +1,22 @@
 GET http://localhost:5000/api/users
 
 ###
-GET http://localhost:5000/api/users/638e21d2138d0172c1089da0
+GET http://localhost:5000/api/users/638e2df6965aaddb095c0a62
 
 ###
 POST  http://localhost:5000/api/users
 Content-Type: application/json
 
 {
-    "first":"Smith",
-    "last":"Will",
-    "title":"Developer",
-    "website":"http://wsmith.com",
-    "file":"20221105-1298473.jpeg",
-    "role":"engineer"
+    "first":"Brad",
+    "last":"Traversy",
+    "title":"Sr. Fullstack Dev",
+    "website":"http://traversy-media.com",
+    "file":"20221105-1298473.jpeg"
 }
 
 ###
-DELETE http://localhost:5000/api/users/638e29d6c9df675e8a677c64
+DELETE http://localhost:5000/api/users/638e2df6965aaddb095c0a62
 
 ###
 PATCH http://localhost:5000/api/users/63770eca86080434a7b2e0b8

@@ -18,7 +18,10 @@ export function createUser() {
 //get users function
 export function getUsers() {
   fetch('/api/users')
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) throw 'Unable to get users';
+      return res.json();
+    })
     .then((users) => {
       users.forEach((user) => {
         const list = document.getElementById('users-list');
